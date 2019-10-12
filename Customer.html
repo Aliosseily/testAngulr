@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="angular.min.js"></script>
+    <script src="BusinessComponents/Customer.js"></script>
+    <script src="Utility/Utility.js"></script>   
+    <script src="Parameters/Constant.js"></script>
+    <script src="Parameters/Value.js"></script>
+    <script src="Provider/CustomerFactory.js"></script>
+
+    <script>
+        //all these objects (FactoryCustomer , Utility , Constants , Values)are injected by providers in this case
+    function Binders($scope , /*Model*/ 
+    FactoryCustomer , // factory
+     Utility ,        // Global utility
+     Constants ,      //Constants
+      Values){ // Values
+        // in this case binder class is tightly coupled with the business entities
+        // $scope.Model = new Customer();
+        // $scope.Utility = new Utility();
+        // $scope.ProjectConstants = new ProjectConstants();
+        // $scope.ProjectValues = new ProjectValues();
+           $scope.Type = "Simple";
+           $scope.Model = FactoryCustomer.Create($scope.Type);
+           $scope.Utility = Utility;
+           $scope.ProjectConstants = Constants;
+           $scope.ProjectValues = Values; 
+           $scope.Validate = function(){
+               if($scope.Model.Validate()){
+               alert(Values.SuccesssMessage)
+               }
+               else{
+                   alert(Values.ErrorMessage)
+               }
+        }
+
+
+        $scope.$watch("Type", function(value){
+            $scope.Model = FactoryCustomer.Create($scope.Type);
+            // if(value == "Simple"){
+            //     $scope.Model = new Customer()
+            // }
+            // else if(value == "Lead"){
+            //     $scope.Model = new Lead()
+            // }
+            // else{
+            //     $scope.Model = new WaalkInCustomer()
+            // }
+        })
+    }
+    var myApp = angular.module("myApp",[]);
+     myApp.controller("Binders",Binders);
+    // put the provider in separate file (provider.js)
+    //provide configuration using angular provider
+    //myApp.config(function($provider){
+        //here you can provide your Constants / Values / Utility / Model
+   // })
+    </script>
+    <!-- we put this provider script here because it needs myApp -->
+ <script src="Provider/Provider.js"></script>
+</head>
+<body ng-app="myApp">
+    <div ng-controller="Binders">
+    FirstName:- <input type="text" ng-model="Model.FirstName" name="name" value=""/><br/>
+    LastName:- <input type="text" ng-model="Model.LastName" name="name" value=""/><br/>
+    Amount:- <input type="text" ng-model="Model.Amount" name="name" value=""/><br/>
+    PhoneNumber:- <input type="text" ng-model="Model.PhoneNumber" name="name" value=""/><br/>
+    Customer Type :- <select ng-model="Model.Type">
+                      <option value="Simple">Simple</option>
+                      <option value="Lead">Lead</option>
+                      <option value="WalkIn">WaalkIn</option>
+                     </select>
+    <input type="button" name="name" ng-click="Valiate()" value="Click"/>
+</div>                 
+</body>
+</html>

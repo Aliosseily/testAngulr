@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Master Page</title>
+</head>
+<script src="angular.min.js"></script>
+<script src="angular-route.js"></script>
+<script>
+    //inside the brackets specify the modules you need to load other than the core module (angular) that is loaded by itself
+    //angular-route.js is an external module , so you need to specify it to load it    
+    var app = angular.module("myApp",['ngRoute']);
+    function myController($scope){
+         $scope.message = "this is my message"
+    }
+    app.controller("myController",myController);
+    app.config(['$routeProvider',function($routeProvider) {
+  $routeProvider
+  .when("/page1", {
+    templateUrl : "page1.html",
+    controller: "myController" //inside page1.html you can access myController object
+  })
+  .when("page2", {
+    templateUrl : "page2.html"
+  })
+  .when("test", {
+    template : "<b> this is my own content </b>" //you can load your own html content
+  })
+  .otherwise({
+      redirectTo:"/"
+  });
+}]);
+
+</script>
+<body ng-app="myApp">
+    this is masterpage section<br/>
+    <!-- when you use # in the href , it does not reload the page , but it goes and 
+    try to search in the document if there is anchor <a> tage with page1 or page2 in this example -->
+
+     <a href = "#page1">page1<br/> <!--inline anchor tag using -->
+    <a href = "#page2">page2       <!--inline anchor tag using -->
+         <!-- ng-view directive relaated to angular-route.js  
+               you can only have ong ng-view in a page-->
+  
+        <div ng-view>  
+<!-- Load page1 and page2 -->
+
+    </div>
+</body>
+</html>

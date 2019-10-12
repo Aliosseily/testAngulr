@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="angular.min.js"></script>
+<script>  
+    function Customer($scope){
+        $scope.$on("MyEvent" ,function(event , data){
+         alert("Customer" + data);
+        })
+        //broadcast
+     $scope.SendDown = function(){
+      $scope.$broadcast("MyEvent" , "Event from Customer");
+     }
+    }
+    function Address($scope){
+        $scope.$on("MyEvent" ,function(event , data){
+            // no stoppropagation function on $broadcast , it works only on $emit
+            event.stoppropagation(); // valid when you do emit, it will not send data to Customer controller
+           
+           // in case of bradcast and you dont want to send data to Phone controller
+           //event.defaultPrevented = true ; 
+            alert("Address" + data);
+        })
+
+    }
+    function Phone($scope){
+        $scope.$on("MyEvent" , function(event , data){
+            //if( event.defaultPrevented = true){
+            //return true;  
+           // }
+            alert("Phone" + data);
+        })
+        //Emit
+     $scope.SendUp = function(){
+        $scope.$emit("MyEvent" , "Event from Phone");
+     }
+    }
+    var myApp = angular.module('myApp',[]);
+    myApp.controller("Customer",Customer);
+    myApp.controller("Address",Address);
+    myApp.controller("Phone",Phone);
+</script>
+<body ng-app="myApp">
+    <div ng-controller="Customer">
+        <input type="button" value="send down" ng-click="SendDown()"/>
+            <div ng-controller="Address">
+                    <div ng-controller="Phone">
+                            <input type="button" value="send up" ng-click="SendUp()"/>
+                            
+                    </div>
+             </div>
+    </div>
+    
+</body>
+</html>

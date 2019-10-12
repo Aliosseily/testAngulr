@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="angular.min.js"></script>
+<script>
+        var app = angular.module("myApp",[]);
+
+//create custom filter
+app.filter("toText",function(){
+    return function (value){
+        if( value == 1){
+            return("One")
+        }
+        else if(value == 2){
+            return("Two")
+        }
+        else{
+            return("Unkown")
+        }
+    }
+});
+
+    function myController($scope){
+         $scope.name = "Sukesh Marla",
+         $scope.salary = 5000,
+         $scope.Employees = [
+             {name:"Sukesh",salary:50000},
+             {name:"Rukesh",salary:100000},
+             {name:"Amarukesh",salary:80000},
+         ],
+         $scope.numberOfRecords = 3
+    }
+    app.controller("myController",myController)
+
+    // you can define function in controller
+    //app.controller("myController",function($scope){
+    //$scope.name = "Sukesh Marla";
+    //})
+</script>
+<body ng-app="myApp">
+    <div ng-controller="myController">
+
+        <span>{{name | uppercase}}</span><br/>
+        <span>{{salary | currency}}</span><br/>
+            <!-- we didn't define Search of ng-model in the scope . 
+            but angular is dynamic language so it will be created by it self automatically -->
+        <input type="text" ng-model="Search" placeholder="Search ..."> <!-- global search by all properties -->
+        <!-- <input type="text" ng-model="Search.name" placeholder="Search ..."> search by name only -->
+        
+        <ul>
+            <!-- you can use multiple filters at the same time . In thia case first filter will run first and second will run secon and sop on -->
+            <li ng-repeat="Employee in Employees | orderBy : 'name' | limitTo : numberOfRecords | filter:Search">
+             {{Employee.name}}({{Employee.salary}})
+            </li>
+        </ul>
+        <input type="text" name="name" ng-model="myInput">
+        <span>{{myInput | toText}}</span>
+    </div>
+    
+
+</body>
+</html>

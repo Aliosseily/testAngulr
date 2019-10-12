@@ -1,0 +1,15 @@
+    
+    
+    <!-- you can use this html page as directive -->
+    <b>This is my user control</b>  
+
+    {{Customer.CustomerName}} <!-- you can use angular directives-->
+
+    <!-- both of the directive and controller share the same scope 
+         To avoid this you can use 'directive.scope = {}'' this wiil create isolated scope for this directive  -->    
+    Customer Name :- <input type="text" ng-model="Customer.CustomerName"/> 
+    {{previewData}} <br/>
+    <textarea rows="4" cols="40" ng-model="previewData"></textarea> <!-- when you change here it 
+        will not affect controller instance . it's only inside directive -->
+        <input type="text" name="name" value=" " ng-model="editFld1"/><br/>
+        <input type="button" name="name" value="click" ng-click="anyMethod()"/><br/>

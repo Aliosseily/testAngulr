@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="angular.min.js"></script>
+<script src="jquery.js"></script>
+<script>
+    function SomeController($scope){
+        $scope.Name = "test";
+    }
+    var myApp = angular.module("myApp",[]);
+    myApp.controller("SomeController",SomeController);
+    function SetValues(){
+        var textref = $("#txt1"); // get text box reference
+        // get access of scope object  // and root scope object
+        var scope = angular.element(textref).scope(); // get root object associated with this textbox
+        scope.Name = "Changed by jquery";
+        scope.$apply(); // run digest cycle manually
+    }
+</script>
+<body ng-app="myApp">
+    <div ng-controller="SomeController">
+        <input id="txt1" type="text" name="name" value="" ng-model="Name"/><br/>
+        <span>{{Name}}</span>
+        <input  type="button" value="Click" onclick="SetValues()"/>
+    </div>
+    
+</body>
+</html>

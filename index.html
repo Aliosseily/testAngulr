@@ -1,0 +1,146 @@
+<html>
+    <script src="angular.min.js"></script>
+
+    <script src="Customer.js"></script>
+    <script src="Utility.js"></script>
+
+
+<script>
+
+function CopyRight(){
+    var directive = {} // New JSON Object
+    directive.restrict = "E"; //restirct use of directive as element only ('E' , 'A' , 'C' , 'M')
+    directive.template = "@CopyRight 2016-2017 {{Customer.CustomerName}}";
+    return directive;
+}    
+function UserControl(){
+    var directive = {// New JSON Object
+        previewData : "@", // one way binding from controller to directive
+        editFld1 : "=", // Tow way binding between controller and directve
+        anyMethod : "&" // you can use any methodS
+    }; 
+    directive.scope = {}; // create isolated scope
+    directive.templateUrl = "UserControl.html"; // url of html page
+    return directive;
+}
+function BindingCode($scope , Factory , UtilityObject , $http , $q){
+
+    function setCustomer(data){
+        $scope.Customers = data
+    }
+    function clearCustomer(){
+        $scope.Customer = {}
+    }
+    function Failure1 (){
+        alert("Failure1")
+    }  
+    function Failure2 (){
+        alert("Failure2")
+    }
+    function Notify1 (){
+        alert("Notify1")
+    }
+    function Notify2 (){
+        alert("Notify2")
+    }      
+
+    //  in case you want your promisses to run mutiple times 
+    // //var fefer
+    // function initPromises(){
+    // defer = $q.defer(); // from $q create defer object
+    // var promise = defer.promise; //from defer create promise object
+    // promise object you will attach your logics
+    // promise.then(setCustomer , Failure1,Notify1);
+    // promise.then(clearCustomer , Failure2,Notify2);
+    // } 
+
+
+
+ var defer = $q.defer(); // from $q create defer object
+ var promise = defer.promise; //from defer create promise object
+ // promise object you will attach your logics
+promise.then(setCustomer , Failure1,Notify1);
+promise.then(clearCustomer , Failure2,Notify2);
+ 
+
+
+
+$scope.Customer = Factory.CreateCustomer(1,UtilityObject);
+$scope.Utility = UtilityObject
+
+$scope.CustomerAmountColor = "Red";
+$scope.$watch("Customer.CustomerAmount",function () {
+    if($scope.Customer.CustomerAmount > 1000){
+        $scope.CustomerAmountColor = "Green";
+    }
+    else{
+        $scope.CustomerAmountColor = "Blue";
+    }
+});
+$scope.Submit = function (){
+    if($scope.Customer.CustomerName.length == 0 ){
+        alert("Not a proper data");
+    }
+    else{
+        //initPromises(); call init promises function to run your promises again and again
+        $http.post("https://reqres.in/api/users", $scope.Customer).//get api from asp.nte api controller
+        success(function(data){
+            defer.resolve(data); // happen one time without calling initPromises function
+        }).error(function(err){
+            defer.reject(); // happen one time without calling initPromises function
+            //defer.notify() // happen multiple times 
+        })
+    }
+}
+}
+var myApp = angular.module("myApp",[]);
+myApp.controller("BindingCode",BindingCode);
+myApp.factory("Factory",Factory);
+myApp.service("UtilityObject",Utility);
+myApp.directive("companyCopyRight",CopyRight);
+myApp.directive("userControl",UserControl);
+myApp.config(['$qProvider', function ($qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
+}]);
+    </script>
+
+
+    <body>
+    <div ng-app="myApp">
+        <div id="CustScreen" ng-controller="BindingCode">
+            Welcome to application {{::Utility.ApplicationName}} and the current version is {{::Utility.ApplicationVersion}}
+     <br/>
+            Customer Name :- <input type="text" ng-model="Customer.CustomerName"/><br/>    
+            Customer Code :- <input type="text" ng-model="Customer.CustomerCode"/><br/>    
+            Customer Amount :- <input type="text" style="background-color:{{CustomerAmountColor}}" ng-model="Customer.CustomerAmount"/><br/>
+            <input type="button" ng-click="Submit()" value="Submit">     
+            <input type="button" ng-click="Customer.CalculateDiscount()" value="Discount">
+
+            {{::Customer.SalesDateTime}}  <br/>  
+            {{Customer.CustomerName}}    
+            {{Customer.CustomerCode}}    
+          <br/>
+            <company-copy-right></company-copy-right> <!--use pascale case in directive name to use hiphen -->
+            <user-control any-method="Customer.CalculateDiscount" edit-Fld1="Customer.customerName" preview-Data = "{{Customer.CustomerName}} {{Customer.CustomerCode}} {{Customer.SalesDateTime}}"></user-control>
+        </div>
+    <br/>
+    <br/>
+    <!-- <div companycopyright></div> -->
+
+    <!-- use this to test factory  -->
+    <!-- <div ng-app="myApp">
+            <div id="CustScreen" ng-controller="BindingCode">
+                Welcome to application {{::Utility.ApplicationName}} and the current version is {{::Utility.ApplicationVersion}}
+         <br/>
+                Customer Name :- <input type="text" ng-model="Customer.CustomerName"/><br/>    
+                Customer Code :- <input type="text" ng-model="Customer.CustomerCode"/><br/>    
+                Customer Amount :- <input type="text" style="background-color:{{CustomerAmountColor}}" ng-model="Customer.CustomerAmount"/><br/>
+                <input type="button" ng-click="Submit()" value="Submit">
+                {{::Customer.SalesDateTime}}  <br/>  
+                {{Customer.CustomerName}}    
+                {{Customer.CustomerCode}}    
+            </div>
+        </div> -->
+    
+    </body>
+    </html>

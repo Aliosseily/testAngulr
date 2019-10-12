@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="angular.min.js"></script>
+<script src="jquery.js"></script>
+<script>
+    // when you use as syntax to controller use this instead of scope
+    //your javascript objects are decouped from angular 
+function Customer1(){
+    this.Customer = {};
+    this.Customer.Id=1;
+    this.Add = function(){
+        alert("This is add");
+    }
+}
+function CustomerExtended(){
+    // this.Add = function(){
+    //     alert("this is add of extended")
+    // }
+}
+// prototype object is a simple object which point to another object . and in this logic as syntax and $parent works
+CustomerExtended.prototype = new Customer1();
+var x = new CustomerExtended();
+x.Add();    
+    function Customer($scope){
+       // $scope.Id = 1;
+       $scope.Customer = {};
+       $scope.Customer.Id = 1;
+    }
+
+    function Address($scope){
+        //$scope.Id = 2;
+        $scope.Address = {};
+       $scope.Address.Id = 2;
+    }
+    var myApp = angular.module("myApp",[]);
+    myApp.controller("Customer",Customer);
+    myApp.controller("Address",Address);
+    myApp.controller("Customer1",Customer1);
+   
+</script>
+<!-- <body ng-app="myApp">
+    <div ng-controller="Customer">
+        {{Id}}
+            <div ng-controller="Address">
+               Address:- {{Id}}<br/>
+               if you have 10 controllers there will be alot of .parent 
+               Customer:- {{$parent.Id}}<br/>get value of parent controller 
+               get value of parent parent controller 
+               another:- {{$parent.$parent.Id}}<br/>
+    </div>    
+    </div>
+    
+</body> -->
+<body ng-app="myApp">
+    <div ng-controller="Customer">
+        {{Customer.Id}}
+        <div ng-controller="Address">
+           Address:- {{Address.Id}}<br/>
+           Customer:- {{Customer.Id}}
+        </div>
+    </div>
+    <div ng-controller="Customer">
+        <input type="text" ng-model="Customer.Id"/>
+        {{Customer.Id}}
+        <div ng-controller="Customer">
+            Second level :- {{Customer.Id}}
+            Parent level :- {{$parent.Customer.Id}}
+            <div ng-controller="Customer">
+            Third level :- {{Customer.Id}}
+            Parent level :- {{$parent.$parent.Customer.Id}}
+            </div>
+        </div>
+    </div>
+    <div ng-controller="Customer1 as level1">
+            <input type="text" ng-model="level1.Customer.Id"/>
+            {{level1.Customer.Id}}
+            <div ng-controller="Customer1 as level2">
+                Second level :- {{level2.Customer.Id}}
+                Parent level :- {{level1.Customer.Id}}
+                <div ng-controller="Customer as level3">
+                Third level :- {{level3.Id}}
+                Parent level :- {{level1.Customer.Id}}
+                </div>
+            </div>
+    </div>
+</body>
+</html>
